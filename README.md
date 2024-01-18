@@ -14,7 +14,7 @@ pip install --editable ./
 
 # plug in DinoSR
 cd examples
-git clone https://github.com/Alexander-H-Liu/DinoSR.git
+git clone https://github.com/Alexander-H-Liu/dinosr.git
 ```
 
 - Data preparation:
@@ -25,7 +25,7 @@ please follow [`instruction provided by wav2vec2`](https://github.com/facebookre
 
 - Training
 
-    For the list of hyper-parameters, see [`config file`](config/audio/pretraining) and also [`model attributes`](models/dinosr.py) where default settings used in the paper are provided. 
+    For the list of hyper-parameters, see [`config file`](config/base.yaml) and also [`model attributes`](models/dinosr.py) where default settings used in the paper are provided. 
 
 ```
 # minimal example to reproduce model
@@ -39,6 +39,10 @@ python fairseq_cli/hydra_train.py -m \
 - Loading pre-trained model as python object
 
 ```
+import fairseq
+import argparse
+code_path = "examples/dinosr"
+fairseq.utils.import_user_module(argparse.Namespace(user_dir=code_path))
 ckpt_path = "/path/to/the/checkpoint.pt"
 models, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([ckpt_path])
 model = models[0]
@@ -53,12 +57,10 @@ python fairseq_cli/hydra_train.py -m \
         --config-name base_100h \
         common.user_dir=examples/dinosr \
         task.data=/path/to/labeled/librispeech/ \
-        model.w2v_path=/path/to/the/checkpoint.pt \
-        task.normalize=True \
-        +model.finetuning_mode=True
+        model.w2v_path=/path/to/dinosr.ckpt \
+        task.normalize=True
 ```
 
-### Pre-trained checkpoints
+### Pre-trained checkpoint
 
-WIP, coming soon
-
+Pre-trained checkpoint without fine-tuning can be downloaded [here](https://data.csail.mit.edu/placesaudio/dinosr/dinosr.ckpt).
